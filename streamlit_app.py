@@ -53,7 +53,7 @@ with st.echo():
     # Pobierz pierwszą tabelę
     df1 = extract_table()
     # Kliknij przycisk, aby załadować nową tabelę
-    button = WebDriverWait(driver, 10).until(
+    button = WebDriverWait(driver, 30).until(
         EC.element_to_be_clickable((By.XPATH, '//*[@id="js-pagination-page-next"]'))
     )
     button.click()
