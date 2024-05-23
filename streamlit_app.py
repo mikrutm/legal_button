@@ -28,9 +28,10 @@ with st.echo():
 
 
 
-    def extract_table():
+def extract_table():
+    try:
         # Znajdź tabelę na stronie
-        table = WebDriverWait(driver, 10).until(
+        table = WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.TAG_NAME, 'table'))
         )
 
@@ -41,31 +42,86 @@ with st.echo():
             cols = row.find_elements(By.TAG_NAME, 'td')
             cols = [col.text for col in cols]
             table_data.append(cols)
-
+        
         return pd.DataFrame(table_data)
-    try:
-        cookies_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'cookies-info'))
-        )
-        cookies_button.click()
-    except Exception as e:
-        print("Baner cookies nie został znaleziony lub nie można go kliknąć:", e)
-    # Pobierz pierwszą tabelę
+    except TimeoutException as e:
+        print("Nie znaleziono tabeli w określonym czasie.")
+        raise e
+
+    # Zamknij baner cookies, jeśli jest obecny
+try:
+    cookies_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, 'cookies-info'))
+    )
+    cookies_button.click()
+    print("Baner cookies zamknięty.")
+except TimeoutException:
+    print("Baner cookies nie został znaleziony lub nie można go kliknąć.")
+except Exception as e:
+    print("Inny błąd podczas zamykania banera cookies:", e)
+
+# Poczekaj na zniknięcie banera cookies
+try:
+    WebDriverWait(driver, 10).until(
+        EC.invisibility_of_element_located((By.ID, 'cookies-info'))
+    )
+    print("Baner cookies zniknął.")
+except TimeoutException:
+    print("Baner cookies nadal widoczny po 10 sekundach.")
+    driver.quit()
+    raise
+
+# Pobierz pierwszą tabelę
+try:
     df1 = extract_table()
-    # Kliknij przycisk, aby załadować nową tabelę
-    button = WebDriverWait(driver, 30).until(
-        EC.element_to_be_clickable((By.XPATH, '//*[@id="js-pagination-page-next"]'))
+    print("Pierwsza tabela pobrana pomyślnie.")
+except TimeoutException as e:
+    print("Nie udało się pobrać pierwszej tabeli.")
+    driver.quit()
+    raise e
+
+# Kliknij przycisk, aby załadować nową tabelę
+try:
+    button = WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.ID, 'js-pagination-page-next'))
     )
     button.click()
-    # Poczekaj na załadowanie nowej tabeli
-    df2 = extract_table()
-    # Połącz tabele
-    df_combined = pd.concat([df1, df2], ignore_index=True)
-    # Zapisz wynik do pliku CSV
-    df_combined.to_csv('combined_table.csv', index=False)
-    # Zamknij przeglądarkę
+    print("Przycisk do załadowania nowej tabeli został kliknięty.")
+except ElementClickInterceptedException:
+    print("Przycisk do załadowania nowej tabeli został zasłonięty. Próbuję ponownie po zamknięciu banera.")
+    cookies_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, 'cookies-info'))
+    )
+    cookies_button.click()
+    WebDriverWait(driver, 10).until(
+        EC.invisibility_of_element_located((By.ID, 'cookies-info'))
+    )
+    button = WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.ID, 'js-pagination-page-next'))
+    )
+    button.click()
+    print("Przycisk do załadowania nowej tabeli został kliknięty.")
+except TimeoutException as e:
+    print("Nie udało się kliknąć przycisku do załadowania nowej tabeli.")
     driver.quit()
+    raise e
 
-    
-    st.code(driver.page_source)
-    str.echo()
+# Poczekaj na załadowanie nowej tabeli
+try:
+    df2 = extract_table()
+    print("Nowa tabela pobrana pomyślnie.")
+except TimeoutException as e:
+    print("Nie udało się pobrać nowej tabeli.")
+    driver.quit()
+    raise e
+
+# Połącz tabele
+df_combined = pd.concat([df1, df2], ignore_index=True)
+
+# Zapisz wynik do pliku CSV
+df_combined.to_csv('combined_table.csv', index=False)
+print("Tabele połączone i zapisane do pliku CSV.")
+
+
+st.code(driver.page_source)
+str.echo()
