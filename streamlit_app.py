@@ -43,7 +43,13 @@ with st.echo():
             table_data.append(cols)
 
         return pd.DataFrame(table_data)
-
+    try:
+        cookies_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, 'cookies-info'))
+        )
+        cookies_button.click()
+    except Exception as e:
+        print("Baner cookies nie został znaleziony lub nie można go kliknąć:", e)
     # Pobierz pierwszą tabelę
     df1 = extract_table()
     # Kliknij przycisk, aby załadować nową tabelę
