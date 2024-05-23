@@ -44,26 +44,22 @@ with st.echo():
 
         return pd.DataFrame(table_data)
 
-        # Pobierz pierwszą tabelę
-        df1 = extract_table()
+    # Pobierz pierwszą tabelę
+    df1 = extract_table()
+    # Kliknij przycisk, aby załadować nową tabelę
+    button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="js-pagination-page-next"]'))
+    )
+    button.click()
+    # Poczekaj na załadowanie nowej tabeli
+    df2 = extract_table()
+    # Połącz tabele
+    df_combined = pd.concat([df1, df2], ignore_index=True)
+    # Zapisz wynik do pliku CSV
+    df_combined.to_csv('combined_table.csv', index=False)
+    # Zamknij przeglądarkę
+    driver.quit()
 
-        # Kliknij przycisk, aby załadować nową tabelę
-        button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="js-pagination-page-next"]'))
-        )
-        button.click()
-
-        # Poczekaj na załadowanie nowej tabeli
-        df2 = extract_table()
-
-        # Połącz tabele
-        df_combined = pd.concat([df1, df2], ignore_index=True)
-
-        # Zapisz wynik do pliku CSV
-        df_combined.to_csv('combined_table.csv', index=False)
-
-        # Zamknij przeglądarkę
-        driver.quit()
-
-
+    
     st.code(driver.page_source)
+    str.echo()
