@@ -42,7 +42,7 @@ def extract_table_to_df(url):
         return pd.read_html(str(table))[0]
 
 # Przykładowe użycie funkcji
-url = "http://example.com"  # Zastąp 'http://example.com' adresem twojej strony
+url = "https://www.gov.pl/web/premier/wplip-rm"  # Zastąp 'http://example.com' adresem twojej strony
 df = extract_table_to_df(url)
 if df is not None:
     st.write("Tabela ze strony:")
