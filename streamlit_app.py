@@ -25,7 +25,7 @@ with st.echo():
     options.add_argument("--headless")
     
     driver = get_driver()
-    driver = webdriver.Chrome(options=options, port=49559)  # Specify port here
+   
     driver.get("https://www.gov.pl/web/premier/wplip-rm")
 
 
