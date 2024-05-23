@@ -34,7 +34,7 @@ def extract_table_to_df(url):
     driver.get(url)
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'html.parser')
-    table = soup.find('table')
+    table = soup.find('results-table')
     if table is None:
         st.write("Nie znaleziono tabeli na stronie.")
         return None
