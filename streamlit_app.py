@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd    
 with st.echo():
-    
+
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.chrome.service import Service
@@ -24,9 +24,10 @@ with st.echo():
     options = Options()
     options.add_argument("--disable-gpu")
     options.add_argument("--headless")
+    options.add_argument('--no-sandbox')  # Add this option if running on Linux
+    options.add_argument('--disable-dev-shm-usage')  # Add this option if running on Linux
     
     driver = get_driver()
-   
     driver.get("https://www.gov.pl/web/premier/wplip-rm")
 
 
