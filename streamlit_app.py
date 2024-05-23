@@ -34,7 +34,7 @@ def extract_table_to_df(url):
     driver.get(url)
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'html.parser')
-    table = soup.find('results-table')
+    table = soup.find('table', class_='results-table')  # Znajdź tabelę o klasie 'results-table'
     if table is None:
         st.write("Nie znaleziono tabeli na stronie.")
         return None
@@ -42,7 +42,7 @@ def extract_table_to_df(url):
         return pd.read_html(str(table))[0]
 
 # Przykładowe użycie funkcji
-url = "https://www.gov.pl/web/premier/wplip-rm"  # Zastąp 'http://example.com' adresem twojej strony
+url = "http://example.com"  # Zastąp 'http://example.com' adresem twojej strony
 df = extract_table_to_df(url)
 if df is not None:
     st.write("Tabela ze strony:")
