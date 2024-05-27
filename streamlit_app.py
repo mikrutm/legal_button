@@ -74,7 +74,7 @@ def to_excel(df):
 # Inicjalizacja WebDriver
 
 
-if st.button("Aktualizuj tabelę"):
+if st.button("Stwórz tabelę "):
 
     host = find_free_host()
     port = find_free_port() 
