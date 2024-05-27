@@ -43,7 +43,7 @@ except Exception as e:
 
 # Kliknięcie przycisku ciasteczek
 try:
-    cookie_button = WebDriverWait(driver, 10).until(
+    cookie_button = WebDriverWait(driver, 12).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/button"))
     )
     cookie_button.click()
@@ -83,7 +83,7 @@ try:
             if 'disabled' in next_button.get_attribute('class'):
                 break  # Wyjdź z pętli, jeśli przycisk jest nieaktywny
             next_button.click()
-            time.sleep(2)  # Poczekaj na załadowanie następnej strony
+            time.sleep(5)  # Poczekaj na załadowanie następnej strony
         except Exception as e:
             st.write("Brak przycisku 'Następna strona' lub nieaktywny.")
             st.write(f"Błąd: {e}")
