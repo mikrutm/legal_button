@@ -3,3 +3,5 @@ seleniumbase
 webdriver-manager
 lxml
 openpyxl
+Python-IO
+xlsxwriter

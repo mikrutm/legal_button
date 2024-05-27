@@ -9,7 +9,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-import openpyxl
 
 @st.cache_resource
 def get_driver():
@@ -58,9 +57,19 @@ except Exception as e:
     st.write("Przycisk ciasteczek nie został znaleziony lub już zaakceptowany.")
     st.write(f"Błąd: {e}")
 
+try:
+    c_button = WebDriverWait(driver, 1).until(
+        EC.element_to_be_clickable((By.XPATH, "/html/body/main/div/article/div[2]/div[2]/nav/div[2]/div/a[3]"))
+    )
+    c_button.click()
+except Exception as e:
+    st.write("Przycisk ciasteczek nie został znaleziony lub już zaakceptowany.")
+    st.write(f"Błąd: {e}")
+
+
 # Pobranie i łączenie danych z tabeli
 all_data = []
-st.title("DORA - Tabelka z Wykazem Prac")
+st.title("DORA - Wykaz Prac")
 #st.subheader("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów.")
 st.write("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów. To doraźna próba naprawienia błędu na stronie https://www.gov.pl/web/premier/wplip-rm. Jeśli ta aplikacja się popsuje, jest szansa że serwis gov uznaje, że jesteśmy złośliwym botem i zblokuje ściaganie danych. Radzę wtedy po prostu poczekać chwilę, lub porposić współpracownika o tej aplikacji na swoim komputererze.")
 st.write(" Tabelka się tworzy, proszę o cierpliwość.")
@@ -103,15 +112,21 @@ try:
     final_df.drop("Podgląd",axis=1,inplace=True)
 
     st.dataframe(final_df)
+    import io
+  # Konwertuj DataFrame do formatu Excel i zapisz w pamięci
+    excel_buffer = io.BytesIO()
+    with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False)
     
-    final_df.to_excel('plik.xlsx', index=False,)
-
+    # Przejdź do początku bufora
+    excel_buffer.seek(0)
+    
+    # Dodaj przycisk do pobrania pliku
     st.download_button(
-    label='Pobierz tabelę jako XLSX',
-    data=final_df,
-    file_name='plik.xlsx',
-    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-)
+        label="Pobierz plik XLSX",
+        data=excel_buffer,
+        file_name="downloaded_file.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreads")
 
 
 except Exception as e:
