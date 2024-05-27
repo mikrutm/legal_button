@@ -8,6 +8,7 @@ import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 @st.cache_resource
 def get_driver():
@@ -16,7 +17,7 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--remote-debugging-port=9222")  # Ustawienie portu zdalnego debugowania
+    options.add_argument("--remote-debugging-port=9222")
 
     try:
         driver = webdriver.Chrome(
@@ -49,14 +50,39 @@ except Exception as e:
     st.write("Przycisk ciasteczek nie został znaleziony lub już zaakceptowany.")
     st.write(f"Błąd: {e}")
 
-# Pobranie tabeli
+# Pobranie i łączenie danych z tabeli
+all_data = []
 try:
-    table_element = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "results-table"))
-    )
-    table_html = table_element.get_attribute('outerHTML')
-    df = pd.read_html(table_html)[0]
-    st.dataframe(df)
+    while True:
+        # Poczekaj na załadowanie tabeli
+        table_element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "results-table"))
+        )
+        table_html = table_element.get_attribute('outerHTML')
+        df = pd.read_html(table_html)[0]
+
+        # Zaktualizuj kolumnę "podgląd" z linkami
+        links = driver.find_elements(By.XPATH, "//td[contains(@class, 'preview-column')]/a")
+        for i, link in enumerate(links):
+            df.at[i, 'podgląd'] = link.get_attribute('href')
+
+        all_data.append(df)
+
+        # Próbuj kliknąć przycisk "Następna strona"
+        try:
+            next_button = driver.find_element(By.XPATH, '//*[@id="js-pagination-page-next"]')
+            if 'disabled' in next_button.get_attribute('class'):
+                break  # Wyjdź z pętli, jeśli przycisk jest nieaktywny
+            next_button.click()
+            time.sleep(2)  # Poczekaj na załadowanie następnej strony
+        except Exception as e:
+            st.write("Brak przycisku 'Następna strona' lub nieaktywny.")
+            st.write(f"Błąd: {e}")
+            break
+
+    # Połącz wszystkie zebrane dane w jeden DataFrame
+    final_df = pd.concat(all_data, ignore_index=True)
+    st.dataframe(final_df)
 except Exception as e:
     st.write("Tabela nie została znaleziona lub nie mogła zostać załadowana.")
     st.write(f"Błąd: {e}")
