@@ -9,6 +9,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+# Uruchom ChromeDriver jako proces podrzędny
+chrome_driver_port = 4444  # Wybierz port ChromeDrivera
+chrome_driver_process = subprocess.Popen(['chromedriver', f'--port={chrome_driver_port}'])
 
 @st.cache_resource
 def get_driver():
@@ -17,7 +20,8 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--remote-debugging-port=9222")
+    options.add_argument("--remote-debugging-port=9122")
+    
     options.add_argument('--disable-blink-features=AutomationControlled')
 
     try:
