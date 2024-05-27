@@ -9,7 +9,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import random
+import socket
+def find_free_port():
+    while True:
+        port = random.randint(1024, 65535)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            if s.connect_ex(('localhost', port)) != 0:
+                return port
 
+port = find_free_port() 
 @st.cache_resource
 def get_driver():
     options = Options()
@@ -17,7 +26,7 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--remote-debugging-port=9222")
+    options.add_argument(f"--remote-debugging-port={port}")
     
     options.add_argument('--disable-blink-features=AutomationControlled')
 
