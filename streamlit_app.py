@@ -49,7 +49,7 @@ def get_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument(f"--remote-debugging-port={port}")
-    options.add_argument(f'--host={host}')
+    #options.add_argument(f'--host={host}')
     
     options.add_argument('--disable-blink-features=AutomationControlled')
 
@@ -76,7 +76,7 @@ def to_excel(df):
 
 if st.button("Stwórz tabelę "):
 
-    host = find_free_host()
+    #host = find_free_host()
     port = find_free_port() 
 
 
