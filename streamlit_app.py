@@ -36,7 +36,7 @@ except Exception as e:
 
 # Scrape the table
 try:
-    table_element = driver.find_element("xpath", "/html/body/main/div/article/div[2]/div[2]/div/table")
+    table_element = driver.find_element("xpath", "/html/body/main/div/article/div[2]/div[2]")
     table_html = table_element.get_attribute('outerHTML')
     df = pd.read_html(table_html)[0]
     st.dataframe(df)
