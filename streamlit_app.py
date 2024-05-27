@@ -116,11 +116,11 @@ try:
   # Konwertuj DataFrame do formatu Excel i zapisz w pamięci
     excel_buffer = io.BytesIO()
     with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
-        df.to_excel(writer, index=False)
-    
+        final_df.to_excel(writer, index=False)
+
     # Przejdź do początku bufora
     excel_buffer.seek(0)
-    
+
     # Dodaj przycisk do pobrania pliku
     st.download_button(
         label="Pobierz plik XLSX",
