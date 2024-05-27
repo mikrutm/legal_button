@@ -32,6 +32,7 @@ def find_free_host():
     for i in range(2, 255):
         host = f"{base_ip}{i}"
         if is_host_free(host):
+            print(host)
             return host
     raise RuntimeError("Nie znaleziono wolnych hostów w podanym zakresie.")
 
@@ -39,6 +40,7 @@ def find_free_host():
 
 host = find_free_host()
 port = find_free_port() 
+
 
 @st.cache_resource
 
