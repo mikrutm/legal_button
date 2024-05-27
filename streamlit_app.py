@@ -18,6 +18,7 @@ def get_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--remote-debugging-port=9222")
+    options.add_argument('--disable-blink-features=AutomationControlled')
 
     try:
         driver = webdriver.Chrome(
@@ -52,6 +53,10 @@ except Exception as e:
 
 # Pobranie i łączenie danych z tabeli
 all_data = []
+st.title("DORA - Tabelka z Wykazem Prac")
+st.header("Opis")
+st.subheader("Małe narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów (https://www.gov.pl/web/premier/wplip-rm). Opracował: Andrzej Józefczyk ")
+
 try:
     while True:
         # Poczekaj na załadowanie tabeli
@@ -60,11 +65,15 @@ try:
         )
         table_html = table_element.get_attribute('outerHTML')
         df = pd.read_html(table_html)[0]
+        print(df)
+        # Wyodrębnienie linków z każdej klasy "results-row"
+        rows = driver.find_elements(By.CLASS_NAME, "result-row")
+        print(rows)
+        row_links = [row.find_element(By.TAG_NAME, "a").get_attribute('href') for row in rows]
+        print(row_links)
 
-        # Zaktualizuj kolumnę "podgląd" z linkami
-        links = driver.find_elements(By.XPATH, "//td[contains(@class, 'preview-column')]/a")
-        for i, link in enumerate(links):
-            df.at[i, 'podgląd'] = link.get_attribute('href')
+        # Dodanie nowej kolumny z linkami do DataFrame
+        df['Link'] = row_links
 
         all_data.append(df)
 
@@ -82,6 +91,7 @@ try:
 
     # Połącz wszystkie zebrane dane w jeden DataFrame
     final_df = pd.concat(all_data, ignore_index=True)
+    final_df.drop("Podgląd",axis=1,inplace=True)
     st.dataframe(final_df)
 except Exception as e:
     st.write("Tabela nie została znaleziona lub nie mogła zostać załadowana.")
