@@ -30,7 +30,7 @@ driver.get("https://www.gov.pl/web/premier/wplip-rm")
 
 # Click the cookie button
 try:
-    cookie_button = WebDriverWait(driver, 10).until(
+    cookie_button = WebDriverWait(driver, 2).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/button"))
     )
     cookie_button.click()
@@ -39,7 +39,7 @@ except Exception as e:
 
 # Scrape the table
 try:
-    table_element = WebDriverWait(driver, 10).until(
+    table_element = WebDriverWait(driver, 2).until(
         EC.presence_of_element_located((By.XPATH, "/html/body/main/div/article/div[2]/div[2]/div/table"))
     )
     table_html = table_element.get_attribute('outerHTML')
