@@ -54,8 +54,8 @@ except Exception as e:
 # Pobranie i łączenie danych z tabeli
 all_data = []
 st.title("DORA - Tabelka z Wykazem Prac")
-st.header("Opis")
-st.subheader("Małe narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów (https://www.gov.pl/web/premier/wplip-rm). Opracował: Andrzej Józefczyk ")
+st.subheader("Małe narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów.")
+st.write("Narzędzie działa jako doraźne naprawienie błędu na stronie https://www.gov.pl/web/premier/wplip-rm. Jeśli serwis się popsuje, jest szansa że serwis gov uznaje, że jesteśmy złośliwym botem i zblokuje ściaganie danych. Radzę wtedy żeby poczekać, lub porposić współpracownika o odpalenie serwisu na swoim komputererze.      Opracował: Andrzej Józefczyk ")
 
 try:
     while True:
