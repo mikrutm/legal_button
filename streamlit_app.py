@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+from io import BytesIO
 
 @st.cache_resource
 def get_driver():
@@ -31,7 +32,13 @@ def get_driver():
         st.error(f"Błąd podczas inicjalizacji ChromeDriver: {e}")
         raise
     return driver
-
+def to_excel(df):
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='openpyxl')
+    df.to_excel(writer, index=False, sheet_name='Arkusz1')
+    writer.save()
+    processed_data = output.getvalue()
+    return processed_data
 # Inicjalizacja WebDriver
 try:
     driver = get_driver()
@@ -54,13 +61,14 @@ except Exception as e:
 # Pobranie i łączenie danych z tabeli
 all_data = []
 st.title("DORA - Tabelka z Wykazem Prac")
-st.subheader("Małe narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów.")
-st.write("Narzędzie działa jako doraźne naprawienie błędu na stronie https://www.gov.pl/web/premier/wplip-rm. Jeśli serwis się popsuje, jest szansa że serwis gov uznaje, że jesteśmy złośliwym botem i zblokuje ściaganie danych. Radzę wtedy żeby poczekać, lub porposić współpracownika o odpalenie serwisu na swoim komputererze.      Opracował: Andrzej Józefczyk ")
+#st.subheader("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów.")
+st.write("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów. To doraźna próba naprawienia błędu na stronie https://www.gov.pl/web/premier/wplip-rm. Jeśli ta aplikacja się popsuje, jest szansa że serwis gov uznaje, że jesteśmy złośliwym botem i zblokuje ściaganie danych. Radzę wtedy po prostu poczekać chwilę, lub porposić współpracownika o tej aplikacji na swoim komputererze.")
+st.write(" Tabelka się tworzy, proszę o cierpliwość.")
 
 try:
     while True:
         # Poczekaj na załadowanie tabeli
-        table_element = WebDriverWait(driver, 10).until(
+        table_element = WebDriverWait(driver, 6).until(
             EC.presence_of_element_located((By.CLASS_NAME, "results-table"))
         )
         table_html = table_element.get_attribute('outerHTML')
@@ -83,18 +91,28 @@ try:
             if 'disabled' in next_button.get_attribute('class'):
                 break  # Wyjdź z pętli, jeśli przycisk jest nieaktywny
             next_button.click()
-            time.sleep(5)  # Poczekaj na załadowanie następnej strony
+            time.sleep(2)  # Poczekaj na załadowanie następnej strony
         except Exception as e:
             st.write("Brak przycisku 'Następna strona' lub nieaktywny.")
             st.write(f"Błąd: {e}")
             break
 
     # Połącz wszystkie zebrane dane w jeden DataFrame
+    
     final_df = pd.concat(all_data, ignore_index=True)
     final_df.drop("Podgląd",axis=1,inplace=True)
     st.dataframe(final_df)
+    excel_data = to_excel(final_df)
+    st.download_button(
+    label='Pobierz tabelę jako XLSX',
+    data=excel_data,
+    file_name='tabela.xlsx',
+    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+)
+
+
 except Exception as e:
     st.write("Tabela nie została znaleziona lub nie mogła zostać załadowana.")
     st.write(f"Błąd: {e}")
-
+st.write("Opracował: Andrzej Józefczyk")
 driver.quit()
