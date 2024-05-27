@@ -170,4 +170,3 @@ except Exception as e:
     st.write("Tabela nie została znaleziona lub nie mogła zostać załadowana.")
     st.write(f"Błąd: {e}")
 st.write("Opracował: Andrzej Józefczyk")
-
