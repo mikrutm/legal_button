@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import subprocess
 # Uruchom ChromeDriver jako proces podrzędny
 chrome_driver_port = 4444  # Wybierz port ChromeDrivera
 chrome_driver_process = subprocess.Popen(['chromedriver', f'--port={chrome_driver_port}'])
