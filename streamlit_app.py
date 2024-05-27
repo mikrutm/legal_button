@@ -89,7 +89,7 @@ except Exception as e:
 
 # Kliknięcie przycisku ciasteczek
 try:
-    cookie_button = WebDriverWait(driver, 12).until(
+    cookie_button = WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/button"))
     )
     cookie_button.click()
@@ -113,7 +113,7 @@ all_data = []
 try:
     while True:
         # Poczekaj na załadowanie tabeli
-        table_element = WebDriverWait(driver, 6).until(
+        table_element = WebDriverWait(driver, 3).until(
             EC.presence_of_element_located((By.CLASS_NAME, "results-table"))
         )
         table_html = table_element.get_attribute('outerHTML')
