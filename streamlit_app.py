@@ -73,20 +73,20 @@ def to_excel(df):
     return processed_data
 # Inicjalizacja WebDriver
 
+try:
+    driver = get_driver()
+    driver.get("https://www.gov.pl/web/premier/wplip-rm")
+except Exception as e:
+    st.error(f"Błąd podczas łączenia się z ChromeDriver: {e}")
+    driver.quit()
+    st.stop()
+
 
 if st.button("Stwórz tabelę "):
 
     #host = find_free_host()
     port = find_free_port() 
 
-
-    try:
-        driver = get_driver()
-        driver.get("https://www.gov.pl/web/premier/wplip-rm")
-    except Exception as e:
-        st.error(f"Błąd podczas łączenia się z ChromeDriver: {e}")
-        driver.quit()
-        st.stop()
 
 # Kliknięcie przycisku ciasteczek
     try:
@@ -146,6 +146,7 @@ if st.button("Stwórz tabelę "):
 
         # Połącz wszystkie zebrane dane w jeden DataFrame
         driver.quit()    
+        
         final_df = pd.concat(all_data, ignore_index=True)
         final_df.drop("Podgląd",axis=1,inplace=True)
 
