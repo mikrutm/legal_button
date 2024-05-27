@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-from io import BytesIO
+
 
 @st.cache_resource
 def get_driver():
@@ -101,12 +101,15 @@ try:
     
     final_df = pd.concat(all_data, ignore_index=True)
     final_df.drop("Podgląd",axis=1,inplace=True)
+
     st.dataframe(final_df)
-    excel_data = to_excel(final_df)
+    
+    final_df.to_excel('plik.xlsx', index=False,)
+
     st.download_button(
     label='Pobierz tabelę jako XLSX',
-    data=excel_data,
-    file_name='tabela.xlsx',
+    data=final_df,
+    file_name='plik.xlsx',
     mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 )
 
