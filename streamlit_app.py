@@ -11,15 +11,38 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import random
 import socket
+
+
+
 def find_free_port():
     while True:
         port = random.randint(1024, 65535)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             if s.connect_ex(('localhost', port)) != 0:
+                print(port)
                 return port
+            
+def is_host_free(host):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex((host, 80)) != 0
 
+# Funkcja do znalezienia wolnego hosta w danym zakresie
+def find_free_host():
+    base_ip = '192.168.0.'
+    for i in range(2, 255):
+        host = f"{base_ip}{i}"
+        if is_host_free(host):
+            return host
+    raise RuntimeError("Nie znaleziono wolnych hostów w podanym zakresie.")
+
+
+
+host = find_free_host()
 port = find_free_port() 
+
 @st.cache_resource
+
+
 def get_driver():
     options = Options()
     options.add_argument("--disable-gpu")
@@ -27,6 +50,7 @@ def get_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument(f"--remote-debugging-port={port}")
+    options.add_argument(f'--host={host}')
     
     options.add_argument('--disable-blink-features=AutomationControlled')
 
