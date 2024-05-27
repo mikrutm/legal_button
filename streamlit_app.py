@@ -52,7 +52,7 @@ except Exception as e:
 # Pobranie tabeli
 try:
     table_element = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "/html/body/main/div/article/div[2]/div[2]/div/table"))
+        EC.presence_of_element_located((By.CLASS_NAME, "results-table"))
     )
     table_html = table_element.get_attribute('outerHTML')
     df = pd.read_html(table_html)[0]
