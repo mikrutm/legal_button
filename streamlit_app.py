@@ -94,10 +94,7 @@ try:
         df['Link'] = row_links
 
         all_data.append(df)
-        final_df = pd.concat(all_data, ignore_index=True)
-        final_df.drop("Podgląd",axis=1,inplace=True)
-
-        st.dataframe(final_df)
+      
 
         # Próbuj kliknąć przycisk "Następna strona"
         try:
