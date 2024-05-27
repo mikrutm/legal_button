@@ -17,7 +17,7 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--remote-debugging-port=9132")
+    options.add_argument("--remote-debugging-port=9222")
     
     options.add_argument('--disable-blink-features=AutomationControlled')
 
@@ -109,7 +109,7 @@ try:
             break
 
     # Połącz wszystkie zebrane dane w jeden DataFrame
-    
+    driver.quit()    
     final_df = pd.concat(all_data, ignore_index=True)
     final_df.drop("Podgląd",axis=1,inplace=True)
 
@@ -135,4 +135,4 @@ except Exception as e:
     st.write("Tabela nie została znaleziona lub nie mogła zostać załadowana.")
     st.write(f"Błąd: {e}")
 st.write("Opracował: Andrzej Józefczyk")
-driver.quit()
+
