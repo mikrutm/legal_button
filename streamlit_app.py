@@ -13,7 +13,7 @@ import random
 import socket
 
 st.title("DORA - Wykaz Prac")
-st.write("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów. To doraźna próba naprawienia błędu na stronie https://www.gov.pl/web/premier/wplip-rm. Jeśli ta aplikacja się popsuje, jest szansa że serwis gov uznaje, że jesteśmy złośliwym botem i zblokuje ściaganie danych. Radzę wtedy po prostu poczekać chwilę, lub porposić współpracownika o tej aplikacji na swoim komputererze.")
+st.write("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów. Jest to doraźna próba naprawienia błędu na stronie https://www.gov.pl/web/premier/wplip-rm. Jeśli ta aplikacja się popsuje, jest szansa że serwis gov uznaje, że jesteśmy złośliwym botem i zblokuje ściaganie danych. Radzę wtedy po prostu poczekać chwilę, lub porposić współpracownika o odpalenie tej aplikacji na swoim komputererze.")
 
 def find_free_port():
     while True:
@@ -99,7 +99,7 @@ if st.button("Stwórz tabelę "):
         cookie_button.click()
     except Exception as e:
         st.write("Przycisk ciasteczek nie został znaleziony lub już zaakceptowany.")
-        st.write(f"Błąd: {e}")
+        st.write(f"{e}")
 
     try:
         c_button = WebDriverWait(driver, 1).until(
