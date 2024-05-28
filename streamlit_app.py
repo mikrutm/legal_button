@@ -77,7 +77,7 @@ def get_driver():
 try:
     driver = get_driver()
     driver.get("https://www.topagrar.pl/articles/aktualnosci/protest-rolnikow-ke-odroczy-chwilowo-wymogi-przed-wyborami-do-pe-a-co-potem-2511126")
-    driver.get("https://www.gov.pl/web/premier/wplip-rm")
+    #driver.get("https://www.gov.pl/web/premier/wplip-rm")
 except Exception as e:
     st.error(f"Błąd podczas łączenia się z ChromeDriver: {e}")
     driver.quit()
