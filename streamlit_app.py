@@ -13,9 +13,7 @@ import random
 import socket
 
 st.title("DORA - Wykaz Prac")
-#st.subheader("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów.")
 st.write("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów. To doraźna próba naprawienia błędu na stronie https://www.gov.pl/web/premier/wplip-rm. Jeśli ta aplikacja się popsuje, jest szansa że serwis gov uznaje, że jesteśmy złośliwym botem i zblokuje ściaganie danych. Radzę wtedy po prostu poczekać chwilę, lub porposić współpracownika o tej aplikacji na swoim komputererze.")
-st.write(" Tabelka się tworzy, proszę o cierpliwość.")
 
 def find_free_port():
     while True:
@@ -38,6 +36,16 @@ def find_free_host():
             print(host)
             return host
     raise RuntimeError("Nie znaleziono wolnych hostów w podanym zakresie.")
+
+port = find_free_port() 
+def to_excel(df):
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='openpyxl')
+    df.to_excel(writer, index=False, sheet_name='Arkusz1')
+    writer.save()
+    processed_data = output.getvalue()
+    return processed_data
+# Inicjalizacja WebDriver
 
 @st.cache_resource
 
@@ -64,14 +72,6 @@ def get_driver():
         st.error(f"Błąd podczas inicjalizacji ChromeDriver: {e}")
         raise
     return driver
-def to_excel(df):
-    output = BytesIO()
-    writer = pd.ExcelWriter(output, engine='openpyxl')
-    df.to_excel(writer, index=False, sheet_name='Arkusz1')
-    writer.save()
-    processed_data = output.getvalue()
-    return processed_data
-# Inicjalizacja WebDriver
 
 try:
     driver = get_driver()
@@ -83,9 +83,10 @@ except Exception as e:
 
 
 if st.button("Stwórz tabelę "):
+    st.write(" Tabelka się tworzy, proszę o cierpliwość.")
 
     #host = find_free_host()
-    port = find_free_port() 
+    
 
 
 # Kliknięcie przycisku ciasteczek
@@ -108,7 +109,6 @@ if st.button("Stwórz tabelę "):
         st.write(f"Błąd: {e}")
 
 
-    # Pobranie i łączenie danych z tabeli
     all_data = []
 
     try:
