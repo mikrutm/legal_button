@@ -13,7 +13,7 @@ import random
 import socket
 
 st.title("DORA - Wykaz Prac")
-st.write("Narzędzie pozwalające pobrać i przeglądać tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów. Jest to doraźna próba naprawienia błędu na stronie https://www.gov.pl/web/premier/wplip-rm. Jeśli ta aplikacja się popsuje, jest szansa że serwis gov uznaje, że jesteśmy złośliwym botem i zblokuje ściaganie danych. Radzę wtedy po prostu poczekać chwilę, lub porposić współpracownika o odpalenie tej aplikacji na swoim komputererze.")
+st.write("Aplikacja pozwala w prosty i automatyczny sposób pobrać i przeglądać aktualną tabelę z wykazem prac legislacyjnych i programowych Rady Ministrów (https://www.gov.pl/web/premier/wplip-rm). Jeśli narzędzie nie działa, proszę odczekać chwilę i spróbować ponownie lub skorzystać z innego komputera.")
 
 def find_free_port():
     while True:
