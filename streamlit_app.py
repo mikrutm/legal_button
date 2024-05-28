@@ -38,6 +38,7 @@ def find_free_host():
     raise RuntimeError("Nie znaleziono wolnych hostów w podanym zakresie.")
 
 port = find_free_port() 
+
 def to_excel(df):
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='openpyxl')
